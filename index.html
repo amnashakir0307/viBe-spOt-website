@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VibeSpot | Home Feed</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --glass: rgba(255, 255, 255, 0.2);
+            --border: rgba(255, 255, 255, 0.3);
+        }
+
+        /* 1. Body Styling - Consistent with Like/Profile */
+        body.feed-body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #a80077, #f09819);
+            background-attachment: fixed;
+            font-family: 'Segoe UI', sans-serif;
+            overflow-y: auto; 
+            min-height: 100vh;
+            color: white;
+        }
+
+        /* 2. Navbar - EXACT MATCH WITH LIKE PAGE */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 60px; /* Standardized height */
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-content {
+            width: 100%;
+            max-width: 935px; /* Same as Profile & Like */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            box-sizing: border-box;
+        }
+
+        .logo {
+            font-family: 'Brush Script MT', cursive;
+            font-size: 1.8rem;
+            cursor: pointer;
+            margin: 0;
+            color: #333;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 22px;
+            align-items: center;
+        }
+
+        .nav-links i {
+            font-size: 1.4rem;
+            cursor: pointer;
+            color: #333;
+            transition: transform 0.2s;
+        }
+
+        .nav-links i:hover {
+            transform: scale(1.1);
+            color: #a80077;
+        }
+
+        /* Home Icon Active Color */
+        .fa-home {
+            color: #a80077 !important;
+        }
+
+        /* 3. Feed Container - Responsive Padding */
+        .feed-container {
+            max-width: 935px;
+            margin: 85px auto 20px; /* Offset for navbar */
+            padding: 0 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-sizing: border-box;
+        }
+
+        /* 4. Post Card - Mobile & Desktop Balance */
+        .post-card {
+            background: white;
+            width: 100%;
+            max-width: 450px; /* Desktop width */
+            border-radius: 8px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .post-img-container {
+            width: 100%;
+            aspect-ratio: 1/1; /* Keeps it square on all screens */
+            background: #fafafa;
+            overflow: hidden;
+        }
+
+        .post-img-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* 5. Mobile Responsive Fixes */
+        @media (max-width: 768px) {
+            .feed-container {
+                padding: 0 10px; /* Kam padding mobile par */
+            }
+            .post-card {
+                max-width: 100%; /* Card mobile screen ki width le lega */
+                border-radius: 0; /* Instagram style flat edges on mobile */
+                margin-bottom: 15px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .navbar { height: 55px; }
+            .nav-content { padding: 0 15px; }
+            .feed-container { margin-top: 75px; }
+            .logo { font-size: 1.5rem; }
+        }
+
+        .loading-text {
+            color: white;
+            text-align: center;
+            margin-top: 50px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body class="feed-body">
+
+    <nav class="navbar">
+        <div class="nav-content">
+            <h2 class="logo" onclick="window.location.href='index.html'">VibeSpot</h2>
+            <div class="nav-links">
+                <i class="fas fa-home" title="Home" onclick="window.location.href='index.html'"></i>
+                <i class="fas fa-plus-square" title="Add Post" onclick="window.location.href='add-post.html'"></i>
+                <i class="far fa-heart" title="Liked Vibes" onclick="window.location.href='like.html'"></i>
+                <i class="fas fa-user-circle" title="Profile" onclick="window.location.href='profile.html'"></i>
+                <i class="fas fa-sign-out-alt" id="logout-btn" title="Logout"></i>
+            </div>
+        </div>
+    </nav>
+
+    <main class="feed-container">
+        <div id="posts-container" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+            <div class="loading-text">
+                <i class="fas fa-spinner fa-spin"></i> Loading your vibe...
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="index.js"></script>
+</body>
+</html>

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liked Vibes | VibeSpot</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --glass: rgba(255, 255, 255, 0.2);
+            --border: rgba(255, 255, 255, 0.3);
+        }
+
+        /* 1. Global Styling - Exact Sync */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #a80077, #f09819);
+            background-attachment: fixed;
+            min-height: 100vh;
+            color: white;
+            overflow-y: auto;
+        }
+
+        /* 2. Navbar - EXACT MATCH */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-content {
+            width: 100%;
+            max-width: 935px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            box-sizing: border-box;
+        }
+
+        .logo {
+            font-family: 'Brush Script MT', cursive;
+            font-size: 1.8rem;
+            cursor: pointer;
+            margin: 0;
+            color: #333;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 22px;
+            align-items: center;
+        }
+
+        .nav-links i {
+            font-size: 1.4rem;
+            cursor: pointer;
+            color: #333;
+            transition: transform 0.2s;
+        }
+
+        .nav-links i:hover {
+            transform: scale(1.1);
+            color: #a80077;
+        }
+
+        /* Liked Icon Active State */
+        .fa-heart.active-link {
+            color: #ff3040 !important;
+        }
+
+        /* 3. Main Container */
+        .feed-container {
+            max-width: 935px;
+            margin: 85px auto 20px;
+            padding: 0 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-sizing: border-box;
+        }
+
+        /* 4. Post Card Styling - Same as Index */
+        .post-card {
+            background: white;
+            width: 100%;
+            max-width: 450px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .post-img-container {
+            width: 100%;
+            aspect-ratio: 1/1;
+            background: #fafafa;
+        }
+
+        .post-img-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* No Likes Styling */
+        .no-likes {
+            text-align: center;
+            margin-top: 50px;
+            background: var(--glass);
+            padding: 40px;
+            border-radius: 15px;
+            border: 1px solid var(--border);
+            backdrop-filter: blur(10px);
+        }
+
+        /* Responsive Breakpoints */
+        @media (max-width: 768px) {
+            .feed-container { padding: 0 15px; }
+            .post-card { max-width: 100%; }
+        }
+
+        @media (max-width: 600px) {
+            .navbar { height: 55px; }
+            .feed-container { margin-top: 75px; }
+            .logo { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body class="feed-body">
+
+    <nav class="navbar">
+        <div class="nav-content">
+            <h2 class="logo" onclick="window.location.href='index.html'">VibeSpot</h2>
+            <div class="nav-links">
+                <i class="fas fa-home" title="Home" onclick="window.location.href='index.html'"></i>
+                <i class="fas fa-plus-square" title="Add Post" onclick="window.location.href='add-post.html'"></i>
+                <i class="fas fa-heart active-link" title="Liked Vibes"></i>
+                <i class="fas fa-user-circle" title="Profile" onclick="window.location.href='profile.html'"></i>
+                <i id="logout-btn" class="fas fa-sign-out-alt" title="Logout"></i>
+            </div>
+        </div>
+    </nav>
+
+    <main class="feed-container">
+        <h2 style="margin-bottom: 25px; font-weight: 300; letter-spacing: 1px;">Your Favorites ❤️</h2>
+        <div id="liked-posts-container" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+            <p>Loading your favorite vibes...</p>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = 'https://hdubheficnczadkiggoa.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhkdWJoZWZpY25jemFka2lnZ29hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ0MzUxNjQsImV4cCI6MjA4MDAxMTE2NH0.0WvZeIdVpkU6YM2SofO1RIrvOks21PgwdJ_MsNp7Fuk';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        async function fetchLikedPosts() {
+            const container = document.getElementById('liked-posts-container');
+            const { data: { user } } = await supabaseClient.auth.getUser();
+            
+            if (!user) {
+                window.location.href = 'app.html';
+                return;
+            }
+
+            const { data: likedData, error } = await supabaseClient
+                .from('likes')
+                .select('posts (*)')
+                .eq('user_id', user.id)
+                .order('id', { ascending: false });
+
+            container.innerHTML = '';
+
+            if (likedData && likedData.length > 0) {
+                likedData.forEach(item => {
+                    const post = item.posts;
+                    if (!post) return;
+
+                    let finalImageUrl = "";
+                    if (post.img_url) {
+                        const cleanFileName = post.img_url.trim().split('/').pop();
+                        finalImageUrl = `${SUPABASE_URL}/storage/v1/object/public/post_images/${encodeURIComponent(cleanFileName)}`;
+                    } else {
+                        finalImageUrl = 'https://placehold.co/600x600?text=No+Image';
+                    }
+
+                    const div = document.createElement('div');
+                    div.className = 'post-card';
+                    div.innerHTML = `
+                        <div class="post-header" style="padding: 10px 12px; display: flex; align-items: center; gap: 10px; color: #333; border-bottom: 1px solid #efefef;">
+                            <div style="width: 30px; height: 30px; border-radius: 50%; overflow:hidden;">
+                                <img src="https://ui-avatars.com/api/?name=${post.username || 'U'}&background=a80077&color=fff" style="width:100%; height:100%;">
+                            </div>
+                            <strong style="font-size: 14px;">${post.username || post.user_name || 'viber'}</strong>
+                        </div>
+                        <div class="post-img-container">
+                            <img src="${finalImageUrl}" onerror="this.src='https://placehold.co/600x600?text=Vibe+Not+Found'">
+                        </div>
+                        <div class="post-footer" style="padding: 12px; color: #333; background: white;">
+                            <div style="color: #ff3040; margin-bottom: 8px;"><i class="fas fa-heart"></i></div>
+                            <div style="font-weight: bold; font-size: 13px; margin-bottom: 5px;">${post.likes || 0} likes</div>
+                            <div style="font-size: 13px;">
+                                <strong>${post.username || 'user'}</strong> ${post.description || ''}
+                            </div>
+                        </div>
+                    `;
+                    container.appendChild(div);
+                });
+            } else {
+                container.innerHTML = `
+                    <div class="no-likes">
+                        <p style="font-size: 1.1rem; margin-bottom: 15px;">You haven't liked any vibes yet! ❤️</p>
+                        <button onclick="window.location.href='index.html'" style="padding: 12px 25px; border-radius: 25px; border: none; background: white; color: #a80077; cursor: pointer; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">Start Exploring</button>
+                    </div>`;
+            }
+        }
+
+        fetchLikedPosts();
+
+        document.getElementById('logout-btn').onclick = async () => {
+            await supabaseClient.auth.signOut();
+            window.location.href = 'app.html';
+        };
+    </script>
+</body>
+</html>

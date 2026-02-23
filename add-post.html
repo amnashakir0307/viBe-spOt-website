@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VibeSpot | Create Post</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --glass: rgba(255, 255, 255, 0.2);
+            --border: rgba(255, 255, 255, 0.3);
+        }
+
+        /* 1. Global Styling - Exact Match */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #a80077, #f09819);
+            background-attachment: fixed;
+            min-height: 100vh;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* 2. Navbar - EXACT MATCH */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-content {
+            width: 100%;
+            max-width: 935px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            box-sizing: border-box;
+        }
+
+        .logo {
+            font-family: 'Brush Script MT', cursive;
+            font-size: 1.8rem;
+            cursor: pointer;
+            margin: 0;
+            color: #333;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 22px;
+            align-items: center;
+        }
+
+        .nav-links i {
+            font-size: 1.4rem;
+            cursor: pointer;
+            color: #333;
+            transition: transform 0.2s;
+        }
+
+        .nav-links i:hover {
+            transform: scale(1.1);
+            color: #a80077;
+        }
+
+        /* Active Plus Icon Color */
+        .fa-plus-square {
+            color: #a80077 !important;
+        }
+
+        /* 3. Glass Container - Optimized Spacing */
+        .glass-container {
+            margin: 85px auto 20px; /* Offset for navbar */
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            width: 90%;
+            max-width: 450px; /* Card width match */
+            padding: 25px;
+            box-sizing: border-box;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        /* 4. Upload Area - Square Look */
+        .upload-area {
+            width: 100%;
+            aspect-ratio: 1/1;
+            border: 2px dashed rgba(255, 255, 255, 0.5);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            overflow: hidden;
+            background: rgba(0, 0, 0, 0.1);
+            transition: 0.3s;
+        }
+
+        .upload-area:hover {
+            background: rgba(0, 0, 0, 0.2);
+            border-color: white;
+        }
+
+        #preview-img { width: 100%; height: 100%; object-fit: cover; display: none; }
+
+        /* 5. Form Elements */
+        .caption-box {
+            width: 100%;
+            background: white;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-size: 15px;
+            outline: none;
+            color: #333;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+
+        .share-btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            background: #a80077; /* Matching theme primary */
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 5px 15px rgba(168, 0, 119, 0.3);
+        }
+
+        .share-btn:hover {
+            background: #80005a;
+            transform: translateY(-2px);
+        }
+
+        /* Responsive Breakpoints */
+        @media (max-width: 600px) {
+            .navbar { height: 55px; }
+            .nav-content { padding: 0 15px; }
+            .glass-container { margin-top: 75px; padding: 20px; }
+            .logo { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-content">
+            <h2 class="logo" onclick="window.location.href='index.html'">VibeSpot</h2>
+            <div class="nav-links">
+                <i class="fas fa-home" title="Home" onclick="window.location.href='index.html'"></i>
+                <i class="fas fa-plus-square" title="Add Post"></i>
+                <i class="far fa-heart" title="Liked Vibes" onclick="window.location.href='like.html'"></i>
+                <i class="fas fa-user-circle" title="Profile" onclick="window.location.href='profile.html'"></i>
+                <i class="fas fa-sign-out-alt" id="logout-btn" title="Logout"></i>
+            </div>
+        </div>
+    </nav>
+
+    <div class="glass-container">
+        <div class="header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <i class="fas fa-arrow-left" style="cursor: pointer; font-size: 1.2rem;" onclick="window.location.href='index.html'"></i>
+            <h2 style="margin: 0; font-weight: 300; letter-spacing: 1px;">New Vibe</h2>
+            <div style="width: 20px;"></div>
+        </div>
+
+        <div class="upload-area" id="drop-zone" onclick="document.getElementById('file-input').click()">
+            <div id="placeholder-content">
+                <i class="fas fa-image fa-3x" style="margin-bottom: 10px; opacity: 0.8;"></i>
+                <p style="font-size: 14px; font-weight: 500;">Select masterpiece</p>
+            </div>
+            <img id="preview-img" src="">
+        </div>
+        <input type="file" id="file-input" hidden accept="image/*">
+
+        <input type="text" id="caption" class="caption-box" placeholder="Write a catchy caption...">
+
+        <button id="share-btn" class="share-btn">Share Vibe</button>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="add-post.js"></script>
+    <script>
+        // Logout logic - Exact same implementation
+        const logoutBtn = document.getElementById('logout-btn');
+        if (logoutBtn) {
+            logoutBtn.onclick = async () => {
+                const { createClient } = supabase;
+                const supabaseClient = createClient('https://hdubheficnczadkiggoa.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhkdWJoZWZpY25jemFka2lnZ29hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ0MzUxNjQsImV4cCI6MjA4MDAxMTE2NH0.0WvZeIdVpkU6YM2SofO1RIrvOks21PgwdJ_MsNp7Fuk');
+                await supabaseClient.auth.signOut();
+                window.location.href = 'app.html';
+            };
+        }
+    </script>
+</body>
+</html>
